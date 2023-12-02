@@ -24,5 +24,6 @@ pkgs.mkShell {
   packages = [
     fenix.stable.toolchain
     aoc
+    pkgs.linuxPackages_latest.perf
   ];
 }
