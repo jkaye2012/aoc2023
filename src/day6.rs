@@ -1,4 +1,4 @@
-type TimeDistancePair = (usize, usize);
+type TimeDistancePair = (i64, i64);
 
 #[aoc_generator(day6, part1)]
 fn generate(input: &str) -> Vec<TimeDistancePair> {
@@ -6,15 +6,15 @@ fn generate(input: &str) -> Vec<TimeDistancePair> {
     let times = tline
         .split_whitespace()
         .skip(1)
-        .map(|s| s.parse::<usize>().unwrap());
+        .map(|s| s.parse::<i64>().unwrap());
     let distances = dline
         .split_whitespace()
         .skip(1)
-        .map(|s| s.parse::<usize>().unwrap());
+        .map(|s| s.parse::<i64>().unwrap());
     times.zip(distances).collect()
 }
 
-fn ways_to_win(time: usize, distance: usize) -> usize {
+fn ways_to_win(time: i64, distance: i64) -> i64 {
     let mut lo = 0;
     let mut hi = time / 2 + (time & 1);
     while lo != hi - 1 {
@@ -29,7 +29,7 @@ fn ways_to_win(time: usize, distance: usize) -> usize {
 }
 
 #[aoc(day6, part1)]
-fn race(input: &[TimeDistancePair]) -> usize {
+fn race(input: &[TimeDistancePair]) -> i64 {
     let mut result = 1;
     for (time, distance) in input {
         result *= ways_to_win(*time, *distance);
@@ -45,19 +45,19 @@ fn generate_kerning(input: &str) -> TimeDistancePair {
         .skip_while(|c| *c != ' ')
         .filter(|c| *c != ' ')
         .collect::<String>()
-        .parse::<usize>()
+        .parse::<i64>()
         .unwrap();
     let distance = dline
         .chars()
         .skip_while(|c| *c != ' ')
         .filter(|c| *c != ' ')
         .collect::<String>()
-        .parse::<usize>()
+        .parse::<i64>()
         .unwrap();
     (time, distance)
 }
 
 #[aoc(day6, part2)]
-fn race_kerning(input: &TimeDistancePair) -> usize {
+fn race_kerning(input: &TimeDistancePair) -> i64 {
     ways_to_win(input.0, input.1)
 }
