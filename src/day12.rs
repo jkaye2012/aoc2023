@@ -78,8 +78,8 @@ pub fn expanded_arrangements(input: &str) -> usize {
                 .split(',')
                 .map(|d| d.parse().unwrap())
                 .collect::<Vec<usize>>();
-            let mut d_exp = Vec::new();
-            let mut c_exp = Vec::new();
+            let mut d_exp = Vec::with_capacity(50);
+            let mut c_exp = Vec::with_capacity(50);
             for i in 0..5 {
                 for d in &damaged {
                     d_exp.push(*d);
