@@ -1,3 +1,4 @@
+use rayon::prelude::*;
 use rustc_hash::FxHashMap;
 
 fn line_arrangements(
@@ -70,7 +71,7 @@ fn arrangements(input: &str) -> usize {
 #[aoc(day12, part2)]
 pub fn expanded_arrangements(input: &str) -> usize {
     input
-        .lines()
+        .par_lines()
         .map(|l| {
             let (conditions, damaged_str) = l.split_once(' ').unwrap();
             let damaged = damaged_str
