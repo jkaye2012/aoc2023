@@ -1,9 +1,9 @@
 use std::fmt::Display;
 
 // Position update, new direction, winding designator
-type Connection = (isize, usize, isize);
+pub type Connection = (isize, usize, isize);
 
-struct PipeMap {
+pub struct PipeMap {
     pipes: Vec<isize>,
     // Up, right, down, left
     connections: [[Connection; 7]; 4],
@@ -25,7 +25,7 @@ fn char_to_pipe(c: char) -> isize {
 }
 
 #[aoc_generator(day10)]
-fn generate(input: &str) -> PipeMap {
+pub fn generate(input: &str) -> PipeMap {
     let len: isize = input.find('\n').unwrap().try_into().unwrap();
     let mut start = 0;
     let pipes: Vec<isize> = input
@@ -84,7 +84,7 @@ fn generate(input: &str) -> PipeMap {
     }
 }
 
-struct Res(usize, usize);
+pub struct Res(usize, usize);
 
 impl Display for Res {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -94,7 +94,7 @@ impl Display for Res {
 }
 
 #[aoc(day10, part1)]
-fn furthest_pipe(input: &PipeMap) -> Res {
+pub fn furthest_pipe(input: &PipeMap) -> Res {
     let mut count = 1;
     let mut curr_pos = input.start + 1;
     let mut curr_dir = 1;

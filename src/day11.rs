@@ -1,4 +1,4 @@
-struct Universe {
+pub struct Universe {
     galaxies: Vec<bool>,
     row_len: usize,
     x_adj: Vec<usize>,
@@ -6,7 +6,7 @@ struct Universe {
 }
 
 #[aoc_generator(day11)]
-fn generate(input: &str) -> Universe {
+pub fn generate(input: &str) -> Universe {
     let galaxies: Vec<bool> = input
         .chars()
         .filter(|c| *c != '\n')
@@ -57,11 +57,11 @@ fn total_galaxy_distance(universe: &Universe, age_multiplier: usize) -> usize {
 }
 
 #[aoc(day11, part1)]
-fn young_galaxy_distance(universe: &Universe) -> usize {
+pub fn young_galaxy_distance(universe: &Universe) -> usize {
     total_galaxy_distance(universe, 2)
 }
 
 #[aoc(day11, part2)]
-fn old_galaxy_distance(universe: &Universe) -> usize {
+pub fn old_galaxy_distance(universe: &Universe) -> usize {
     total_galaxy_distance(universe, 1000000)
 }

@@ -61,10 +61,7 @@ impl Traversal {
                         if let Some((r, c)) = self.step(row, col, LEFT) {
                             energized += self.traverse(r, c, LEFT);
                         }
-                        if let Some((r, c)) = self.step(row, col, RIGHT) {
-                            energized += self.traverse(r, c, RIGHT);
-                        }
-                        return energized;
+                        dir = RIGHT;
                     }
                 }
                 SPLITTER_VERT => {
@@ -72,10 +69,7 @@ impl Traversal {
                         if let Some((r, c)) = self.step(row, col, UP) {
                             energized += self.traverse(r, c, UP);
                         }
-                        if let Some((r, c)) = self.step(row, col, DOWN) {
-                            energized += self.traverse(r, c, DOWN);
-                        }
-                        return energized;
+                        dir = DOWN;
                     }
                 }
                 MIRROR_FWD => match dir {
