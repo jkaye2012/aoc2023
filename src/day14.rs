@@ -33,86 +33,87 @@ pub fn dish_tilt(input: &str) -> usize {
     result
 }
 
-type Elem = (usize, usize, char);
-
 #[derive(Clone)]
 pub struct SparseMatrix {
-    elems: Vec<Elem>,
+    elems: Vec<u8>,
     rows: usize,
     cols: usize,
     next_pos: Vec<usize>,
 }
 
 impl SparseMatrix {
-    pub fn north_load(&self) -> usize {
-        self.elems
-            .iter()
-            .filter(|(_, _, c)| *c != '#')
-            .map(|(y, _, _)| self.rows - y)
-            .sum()
-    }
-
-    pub fn cycle(&mut self) {
+    pub fn cycle(&mut self) -> usize {
         self.tilt_north();
         self.tilt_west();
         self.tilt_south();
-        self.tilt_east();
+        self.tilt_east()
     }
 
     pub fn tilt_north(&mut self) {
-        self.elems
-            .sort_by(|(y, x, _), (yb, xb, _)| (x, y).cmp(&(xb, yb)));
         self.next_pos.fill(0);
-        for (y, x, c) in &mut self.elems {
-            if *c == '#' {
-                self.next_pos[*x] = *y + 1;
-            } else {
-                *y = self.next_pos[*x];
-                self.next_pos[*x] += 1;
+        for row in 0..self.rows {
+            for col in 0..self.cols {
+                let idx = col + row * self.cols;
+                let elem = self.elems[idx];
+                if elem == b'#' {
+                    self.next_pos[col] = row + 1;
+                } else if elem == b'O' {
+                    self.elems.swap(idx, self.next_pos[col] * self.cols + col);
+                    self.next_pos[col] += 1;
+                }
             }
         }
     }
 
     pub fn tilt_west(&mut self) {
-        self.elems
-            .sort_by(|(y, x, _), (yb, xb, _)| (y, x).cmp(&(yb, xb)));
         self.next_pos.fill(0);
-        for (y, x, c) in &mut self.elems {
-            if *c == '#' {
-                self.next_pos[*y] = *x + 1;
-            } else {
-                *x = self.next_pos[*y];
-                self.next_pos[*y] += 1;
+        for row in 0..self.rows {
+            for col in 0..self.cols {
+                let idx = col + row * self.cols;
+                let elem = self.elems[idx];
+                if elem == b'#' {
+                    self.next_pos[row] = col + 1;
+                } else if elem == b'O' {
+                    self.elems.swap(idx, row * self.cols + self.next_pos[row]);
+                    self.next_pos[row] += 1;
+                }
             }
         }
     }
 
     pub fn tilt_south(&mut self) {
-        self.elems
-            .sort_by(|(y, x, _), (yb, xb, _)| (xb, yb).cmp(&(x, y)));
         self.next_pos.fill(self.rows - 1);
-        for (y, x, c) in &mut self.elems {
-            if *c == '#' {
-                self.next_pos[*x] = *y - 1;
-            } else {
-                *y = self.next_pos[*x];
-                self.next_pos[*x] -= 1;
+        for row in (0..self.rows).rev() {
+            for col in 0..self.cols {
+                let idx = col + row * self.cols;
+                let elem = self.elems[idx];
+                if elem == b'#' {
+                    self.next_pos[col] = row - 1;
+                } else if elem == b'O' {
+                    self.elems.swap(idx, self.next_pos[col] * self.cols + col);
+                    self.next_pos[col] -= 1;
+                }
             }
         }
     }
 
-    pub fn tilt_east(&mut self) {
-        self.elems
-            .sort_by(|(y, x, _), (yb, xb, _)| (yb, xb).cmp(&(y, x)));
+    pub fn tilt_east(&mut self) -> usize {
+        let mut load = 0;
         self.next_pos.fill(self.cols - 1);
-        for (y, x, c) in &mut self.elems {
-            if *c == '#' {
-                self.next_pos[*y] = *x - 1;
-            } else {
-                *x = self.next_pos[*y];
-                self.next_pos[*y] -= 1;
+        for row in 0..self.rows {
+            for col in (0..self.cols).rev() {
+                let idx = col + row * self.cols;
+                let elem = self.elems[idx];
+                if elem == b'#' {
+                    self.next_pos[row] = col - 1;
+                } else if elem == b'O' {
+                    load += self.rows - row;
+                    self.elems.swap(idx, row * self.cols + self.next_pos[row]);
+                    self.next_pos[row] -= 1;
+                }
             }
         }
+        load
     }
 }
 
@@ -121,11 +122,10 @@ pub fn generate(input: &str) -> SparseMatrix {
     let rows = input.lines().count();
     let cols = input.find('\n').unwrap();
     let elems = input
-        .chars()
-        .filter(|c| *c != '\n')
-        .enumerate()
-        .filter(|(_, c)| *c != '.')
-        .map(|(idx, c)| (idx / cols, idx % cols, c))
+        .as_bytes()
+        .iter()
+        .filter(|b| **b != b'\n')
+        .map(|b| *b)
         .collect();
     SparseMatrix {
         elems,
@@ -160,8 +160,7 @@ pub fn dish_tilts(input: &SparseMatrix) -> usize {
     let mut cycle;
     let mut idx = 0;
     loop {
-        matrix.cycle();
-        let n = matrix.north_load();
+        let n = matrix.cycle();
         recur.push(n);
         cycle = try_find_cycle(&mut cache, idx, n);
         if cycle.is_some() {
