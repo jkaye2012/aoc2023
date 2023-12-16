@@ -29,7 +29,7 @@ impl State {
 }
 
 #[aoc(day1, part1)]
-fn trebuchet_simple(input: &str) -> u32 {
+pub fn trebuchet_simple(input: &str) -> u32 {
     let mut result = 0u32;
     let mut state = State::default();
     let mut chars = input.chars();
@@ -49,7 +49,7 @@ const WORDS: [&str; 9] = [
 ];
 
 #[aoc(day1, part2)]
-fn trebuchet_wordy(input: &str) -> u32 {
+pub fn trebuchet_wordy(input: &str) -> u32 {
     let mut result = 0u32;
     let mut state = State::default();
     let mut chars = input.chars();

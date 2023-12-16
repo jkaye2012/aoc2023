@@ -46,7 +46,7 @@ fn line_arrangements(
 }
 
 #[aoc(day12, part1)]
-fn arrangements(input: &str) -> usize {
+pub fn arrangements(input: &str) -> usize {
     input
         .lines()
         .map(|l| {

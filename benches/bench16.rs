@@ -3,7 +3,6 @@ use criterion::{black_box, criterion_group, criterion_main, Criterion};
 fn day16(c: &mut Criterion) {
     let input: &str = include_str!("../input/2023/day16.txt").trim();
     let mut group = c.benchmark_group("day16");
-    group.sampling_mode(criterion::SamplingMode::Flat);
     group.bench_function("generator", |b| {
         b.iter(|| aoc2023::day16::generate(black_box(input)))
     });

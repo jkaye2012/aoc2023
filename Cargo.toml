@@ -19,6 +19,18 @@ inherits = "release"
 debug = true
 
 [[bench]]
+name = "bench1"
+harness = false
+
+[[bench]]
+name = "bench12"
+harness = false
+
+[[bench]]
+name = "bench14"
+harness = false
+
+[[bench]]
 name = "bench15"
 harness = false
 
