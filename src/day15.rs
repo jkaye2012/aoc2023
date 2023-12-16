@@ -1,5 +1,5 @@
 #[aoc(day15, part1)]
-fn hash_sum(input: &str) -> usize {
+pub fn hash_sum(input: &str) -> usize {
     let mut result = 0usize;
     let mut curr = 0usize;
     for b in input.as_bytes() {
@@ -71,7 +71,7 @@ impl<'a> Lenses<'a> {
 }
 
 #[aoc(day15, part2)]
-fn focusing_power(input: &str) -> usize {
+pub fn focusing_power(input: &str) -> usize {
     let bytes = input.as_bytes();
     let mut boxes: [Lenses; 256] = std::array::from_fn(|_| Lenses::new());
     let mut start = 0usize;
