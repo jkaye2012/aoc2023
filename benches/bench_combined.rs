@@ -3,6 +3,7 @@ use criterion::{black_box, criterion_group, criterion_main, Criterion};
 fn all(c: &mut Criterion) {
     let input1 = include_str!("../input/2023/day1.txt").trim();
     let input12 = include_str!("../input/2023/day12.txt").trim();
+    let input13 = include_str!("../input/2023/day13.txt").trim();
     let input14 = include_str!("../input/2023/day14.txt").trim();
     let input15 = include_str!("../input/2023/day15.txt").trim();
     let input16 = include_str!("../input/2023/day16.txt").trim();
@@ -13,6 +14,9 @@ fn all(c: &mut Criterion) {
             aoc2023::day1::trebuchet_wordy(input1);
             aoc2023::day12::arrangements(input12);
             aoc2023::day12::expanded_arrangements(input12);
+            let gen13 = aoc2023::day13::generate(input13);
+            aoc2023::day13::reflections(&gen13);
+            aoc2023::day13::reflections_smudged(&gen13);
             let gen14 = aoc2023::day14::generate(input14);
             aoc2023::day14::dish_tilt(input14);
             aoc2023::day14::dish_tilts(&gen14);
