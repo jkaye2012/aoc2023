@@ -1,5 +1,5 @@
+use radix_heap::RadixHeapMap;
 use rustc_hash::FxHashMap;
-use std::collections::BinaryHeap;
 
 pub struct City {
     heat_loss: Vec<u8>,
@@ -36,33 +36,6 @@ enum Direction {
     Down,
     Left,
     Up,
-}
-
-#[derive(PartialEq, Eq)]
-struct Pending {
-    heat: u32,
-    step: Step,
-}
-
-impl Ord for Pending {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        other
-            .heat
-            .cmp(&self.heat)
-            .then_with(|| self.step.cmp(&other.step))
-    }
-}
-
-impl PartialOrd for Pending {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-struct Traversal<'a> {
-    city: &'a City,
-    cache: FxHashMap<Step, u32>,
-    pending: BinaryHeap<Pending>,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
@@ -131,6 +104,37 @@ impl Step {
         };
         Some(Self { idx, dir, steps })
     }
+
+    pub fn to_pending(&self) -> PendingStep {
+        PendingStep {
+            idx: self.idx,
+            steps: self.steps,
+            dir: if self.dir == Direction::Right || self.dir == Direction::Left {
+                PendingDirection::Horiz
+            } else {
+                PendingDirection::Vert
+            },
+        }
+    }
+}
+
+#[derive(PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy, Debug)]
+enum PendingDirection {
+    Horiz,
+    Vert,
+}
+
+#[derive(PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy, Debug)]
+struct PendingStep {
+    idx: usize,
+    dir: PendingDirection,
+    steps: u8,
+}
+
+struct Traversal<'a> {
+    city: &'a City,
+    cache: FxHashMap<PendingStep, u32>,
+    pending: RadixHeapMap<std::cmp::Reverse<u32>, Step>,
 }
 
 impl<'a> Traversal<'a> {
@@ -138,48 +142,42 @@ impl<'a> Traversal<'a> {
         Traversal {
             city,
             cache: FxHashMap::default(),
-            pending: BinaryHeap::new(),
+            pending: RadixHeapMap::new(),
         }
     }
 
     pub fn minimize(&mut self, ultra: bool) -> u32 {
         let target_idx = self.city.len() - 1;
-        let mut curr = Pending {
-            step: Step {
-                idx: 0,
-                dir: Direction::Right,
-                steps: 0,
-            },
-            heat: 0,
+        let mut curr = Step {
+            idx: 0,
+            dir: Direction::Right,
+            steps: 0,
         };
-        self.cache.insert(curr.step, 0);
-        let down = Pending {
-            step: Step {
-                idx: 0,
-                dir: Direction::Down,
-                steps: 0,
-            },
-            heat: 0,
+        self.cache.insert(curr.to_pending(), 0);
+        let down = Step {
+            idx: 0,
+            dir: Direction::Down,
+            steps: 0,
         };
-        self.cache.insert(down.step, 0);
-        self.pending.push(down);
+        self.cache.insert(down.to_pending(), 0);
+        self.pending.push(std::cmp::Reverse(0), down);
 
-        while curr.step.idx != target_idx || (ultra && curr.step.steps < 4) {
+        let mut heat = std::cmp::Reverse(0);
+        while curr.idx != target_idx || (ultra && curr.steps < 4) {
             for neighbor in self.neighbors(&curr, ultra) {
                 if let Some(step) = neighbor {
-                    self.maybe_update_pending(curr.step, step);
+                    self.maybe_update_pending(&curr, step);
                 }
             }
-            curr = self.pending.pop().unwrap();
+            (heat, curr) = self.pending.pop().unwrap();
         }
 
-        curr.heat
+        heat.0
     }
 
-    fn neighbors(&self, curr: &Pending, ultra: bool) -> [Option<Step>; 3] {
-        let col = curr.step.idx % self.city.cols;
-        let row = curr.step.idx / self.city.cols;
-        let s = &curr.step;
+    fn neighbors(&self, s: &Step, ultra: bool) -> [Option<Step>; 3] {
+        let col = s.idx % self.city.cols;
+        let row = s.idx / self.city.cols;
 
         if ultra {
             match s.dir {
@@ -230,20 +228,19 @@ impl<'a> Traversal<'a> {
         }
     }
 
-    fn maybe_update_pending(&mut self, curr: Step, next: Step) {
-        let curr_heat = self.cache.get(&curr).unwrap();
+    fn maybe_update_pending(&mut self, curr: &Step, next: Step) {
+        let curr_heat = self.cache.get(&curr.to_pending()).unwrap();
         let heat = curr_heat + self.city.heat_loss[next.idx] as u32;
-        let next_cache = self.cache.get(&next);
+        let next_cache = self.cache.get(&next.to_pending());
         let next_heat = next_cache.unwrap_or(&u32::MAX);
 
         if heat < *next_heat {
             if next_cache.is_none() {
-                self.cache.insert(next, heat);
+                self.cache.insert(next.to_pending(), heat);
             } else {
-                *self.cache.get_mut(&next).unwrap() = heat;
+                *self.cache.get_mut(&next.to_pending()).unwrap() = heat;
             }
-            let pending = Pending { step: next, heat };
-            self.pending.push(pending);
+            self.pending.push(std::cmp::Reverse(heat), next);
         }
     }
 }

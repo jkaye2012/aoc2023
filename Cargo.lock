@@ -59,6 +59,7 @@ dependencies = [
  "aoc-runner",
  "aoc-runner-derive",
  "criterion",
+ "radix-heap",
  "rayon",
  "rustc-hash",
 ]
@@ -376,6 +377,12 @@ checksum = "5267fca4496028628a95160fc423a33e8b2e6af8a5302579e322e4b520293cae"
 dependencies = [
  "proc-macro2",
 ]
+
+[[package]]
+name = "radix-heap"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "59ffec9df464013295b499298811e6a3de31bf8128092135826517db12dee601"
 
 [[package]]
 name = "rayon"
