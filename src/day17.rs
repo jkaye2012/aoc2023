@@ -1,4 +1,7 @@
-use std::{collections::HashMap, fmt::Display};
+use std::{
+    collections::{BinaryHeap, HashMap},
+    fmt::Display,
+};
 
 pub struct City {
     heat_loss: Vec<u8>,
@@ -29,7 +32,7 @@ pub fn generate(input: &str) -> City {
     }
 }
 
-#[derive(PartialEq, Eq, Hash, Clone, Copy, Debug)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy, Debug)]
 enum Direction {
     Right,
     Down,
@@ -48,18 +51,34 @@ impl Display for Direction {
     }
 }
 
+#[derive(PartialEq, Eq)]
 struct Pending {
-    step: Step,
     heat: u32,
+    step: Step,
+}
+
+impl Ord for Pending {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        other
+            .heat
+            .cmp(&self.heat)
+            .then_with(|| self.step.cmp(&other.step))
+    }
+}
+
+impl PartialOrd for Pending {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 struct Traversal<'a> {
     city: &'a City,
     cache: HashMap<Step, u32>,
-    pending: Vec<Pending>,
+    pending: BinaryHeap<Pending>,
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
 struct Step {
     idx: usize,
     dir: Direction,
@@ -158,7 +177,7 @@ impl<'a> Traversal<'a> {
         Traversal {
             city,
             cache: HashMap::new(),
-            pending: Vec::new(),
+            pending: BinaryHeap::new(),
         }
     }
 
@@ -259,41 +278,12 @@ impl<'a> Traversal<'a> {
         if heat < *next_heat {
             if next_cache.is_none() {
                 self.cache.insert(next, heat);
-                let pending = Pending { step: next, heat };
-                if let Some(idx) = self.pending.iter().position(|p| p.heat <= heat) {
-                    self.pending.insert(idx, pending);
-                } else {
-                    self.pending.push(pending);
-                }
             } else {
                 let cached = self.cache.get_mut(&next).unwrap();
                 *cached = heat;
-                let p = self
-                    .pending
-                    .iter_mut()
-                    .enumerate()
-                    .find(|(_, p)| p.step == next);
-
-                if let Some((mut idx, pending)) = p {
-                    pending.heat = heat;
-
-                    while idx < self.pending.len() - 1 {
-                        if self.pending[idx + 1].heat <= heat {
-                            break;
-                        }
-                        self.pending.swap(idx, idx + 1);
-                        idx += 1;
-                    }
-                }
-                // else {
-                //     let pending = Pending { step: next, heat };
-                //     if let Some(idx) = self.pending.iter().position(|p| p.heat <= heat) {
-                //         self.pending.insert(idx, pending);
-                //     } else {
-                //         self.pending.push(pending);
-                //     }
-                // }
             }
+            let pending = Pending { step: next, heat };
+            self.pending.push(pending);
         }
     }
 }
