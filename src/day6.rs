@@ -1,7 +1,7 @@
-type TimeDistancePair = (i64, i64);
+pub type TimeDistancePair = (i64, i64);
 
 #[aoc_generator(day6, part1)]
-fn generate(input: &str) -> Vec<TimeDistancePair> {
+pub fn generate(input: &str) -> Vec<TimeDistancePair> {
     let (tline, dline) = input.split_once('\n').unwrap();
     let times = tline
         .split_whitespace()
@@ -29,7 +29,7 @@ fn ways_to_win(time: i64, distance: i64) -> i64 {
 }
 
 #[aoc(day6, part1)]
-fn race(input: &[TimeDistancePair]) -> i64 {
+pub fn race(input: &[TimeDistancePair]) -> i64 {
     let mut result = 1;
     for (time, distance) in input {
         result *= ways_to_win(*time, *distance);
@@ -38,7 +38,7 @@ fn race(input: &[TimeDistancePair]) -> i64 {
 }
 
 #[aoc_generator(day6, part2)]
-fn generate_kerning(input: &str) -> TimeDistancePair {
+pub fn generate_kerning(input: &str) -> TimeDistancePair {
     let (tline, dline) = input.split_once('\n').unwrap();
     let time = tline
         .chars()
@@ -58,6 +58,6 @@ fn generate_kerning(input: &str) -> TimeDistancePair {
 }
 
 #[aoc(day6, part2)]
-fn race_kerning(input: &TimeDistancePair) -> i64 {
+pub fn race_kerning(input: &TimeDistancePair) -> i64 {
     ways_to_win(input.0, input.1)
 }

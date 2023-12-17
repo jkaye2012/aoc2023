@@ -49,7 +49,7 @@ enum HandType {
 }
 
 #[derive(Eq, PartialEq, PartialOrd, Ord, Debug, Clone, Copy)]
-struct Hand {
+pub struct Hand {
     htype: HandType,
     orig: [u8; 5],
     bid: usize,
@@ -146,7 +146,7 @@ impl Hand {
     }
 }
 
-fn generate(input: &str, use_wildcard: bool) -> Vec<Hand> {
+fn generator(input: &str, use_wildcard: bool) -> Vec<Hand> {
     let mut hands: Vec<Hand> = input
         .lines()
         .map(|i| {
@@ -164,18 +164,18 @@ fn generate(input: &str, use_wildcard: bool) -> Vec<Hand> {
 }
 
 #[aoc_generator(day7, part1)]
-fn generator(input: &str) -> Vec<Hand> {
-    generate(input, false)
+pub fn generate(input: &str) -> Vec<Hand> {
+    generator(input, false)
 }
 
 #[aoc_generator(day7, part2)]
-fn generator_wildcard(input: &str) -> Vec<Hand> {
-    generate(input, true)
+pub fn generate_wildcard(input: &str) -> Vec<Hand> {
+    generator(input, true)
 }
 
 #[aoc(day7, part1)]
 #[aoc(day7, part2)]
-fn total_winnings(hands: &[Hand]) -> usize {
+pub fn total_winnings(hands: &[Hand]) -> usize {
     hands
         .iter()
         .enumerate()

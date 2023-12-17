@@ -31,6 +31,30 @@ name = "bench3"
 harness = false
 
 [[bench]]
+name = "bench4"
+harness = false
+
+[[bench]]
+name = "bench5"
+harness = false
+
+[[bench]]
+name = "bench6"
+harness = false
+
+[[bench]]
+name = "bench7"
+harness = false
+
+[[bench]]
+name = "bench8"
+harness = false
+
+[[bench]]
+name = "bench9"
+harness = false
+
+[[bench]]
 name = "bench10"
 harness = false
 

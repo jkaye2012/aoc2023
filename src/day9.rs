@@ -1,8 +1,8 @@
-const ARITY: usize = 21;
-type SensorValue = [i64; ARITY];
+pub const ARITY: usize = 21;
+pub type SensorValue = [i64; ARITY];
 
 #[aoc_generator(day9)]
-fn generate(input: &str) -> Vec<SensorValue> {
+pub fn generate(input: &str) -> Vec<SensorValue> {
     input
         .lines()
         .map(|l| {
@@ -42,11 +42,11 @@ fn trends(readings: &SensorValue) -> (i64, i64) {
 }
 
 #[aoc(day9, part1)]
-fn sensor_next(input: &[SensorValue]) -> i64 {
+pub fn sensor_next(input: &[SensorValue]) -> i64 {
     input.iter().map(|sv| trends(sv).1).sum()
 }
 
 #[aoc(day9, part2)]
-fn sensor_prev(input: &[SensorValue]) -> i64 {
+pub fn sensor_prev(input: &[SensorValue]) -> i64 {
     input.iter().map(|sv| trends(sv).0).sum()
 }

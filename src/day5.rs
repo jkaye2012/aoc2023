@@ -1,5 +1,5 @@
 #[aoc(day5, part1)]
-fn almanac(input: &str) -> isize {
+pub fn almanac(input: &str) -> isize {
     let mut lines = input.lines();
     let mut seeds = lines
         .next()
@@ -141,7 +141,7 @@ impl SeedRange {
 }
 
 #[aoc(day5, part2)]
-fn almanac_ranged(input: &str) -> isize {
+pub fn almanac_ranged(input: &str) -> isize {
     let mut lines = input.lines();
     let seeds = lines
         .next()

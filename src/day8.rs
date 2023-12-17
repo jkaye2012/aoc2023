@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::util::lcm;
 
 #[derive(Debug)]
-struct Map {
+pub struct Map {
     directions: Vec<usize>,
     nodes: Vec<[usize; 2]>,
     start_indices: Vec<usize>,
@@ -11,7 +11,7 @@ struct Map {
 }
 
 #[aoc_generator(day8)]
-fn generate(input: &str) -> Map {
+pub fn generate(input: &str) -> Map {
     let mut lines = input.lines();
     let directions = lines
         .next()
@@ -76,12 +76,12 @@ fn steps(map: &Map, start: usize, end: Option<usize>) -> usize {
 }
 
 #[aoc(day8, part1)]
-fn camel_map(map: &Map) -> usize {
+pub fn camel_map(map: &Map) -> usize {
     steps(map, 0, Some(map.nodes.len() - 1))
 }
 
 #[aoc(day8, part2)]
-fn ghost_map(map: &Map) -> usize {
+pub fn ghost_map(map: &Map) -> usize {
     std::thread::scope(|s| {
         let mut handles = Vec::new();
         for start in &map.start_indices {

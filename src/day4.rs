@@ -15,7 +15,7 @@ fn num_wins(winning: &str, ours: &str) -> u32 {
 }
 
 #[aoc(day4, part1)]
-fn scratchcard(input: &str) -> u32 {
+pub fn scratchcard(input: &str) -> u32 {
     let lines = input
         .lines()
         .map(|l| l.split_once(": ").unwrap().1.split_once(" | ").unwrap());
@@ -32,7 +32,7 @@ fn scratchcard(input: &str) -> u32 {
 }
 
 #[aoc(day4, part2)]
-fn scratchcards(input: &str) -> usize {
+pub fn scratchcards(input: &str) -> usize {
     let num = input.lines().count();
     let lines = input
         .lines()
