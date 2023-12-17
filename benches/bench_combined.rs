@@ -17,6 +17,7 @@ fn all(c: &mut Criterion) {
     let input14 = include_str!("../input/2023/day14.txt").trim();
     let input15 = include_str!("../input/2023/day15.txt").trim();
     let input16 = include_str!("../input/2023/day16.txt").trim();
+    let input17 = include_str!("../input/2023/day17.txt").trim();
     let mut group = c.benchmark_group("2023");
     group.bench_function("all", |b| {
         b.iter(|| {
@@ -79,6 +80,10 @@ fn all(c: &mut Criterion) {
             let gen16 = aoc2023::day16::generate(input16);
             aoc2023::day16::mirror_energy(black_box(&gen16));
             aoc2023::day16::max_mirror_energy(black_box(&gen16));
+
+            let gen17 = aoc2023::day17::generate(input17);
+            aoc2023::day17::minimize_heat_loss(&gen17);
+            aoc2023::day17::minimize_heat_loss_ultra(&gen17);
         })
     });
 }
