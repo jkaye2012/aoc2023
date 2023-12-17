@@ -3,7 +3,7 @@ use criterion::{criterion_group, criterion_main, Criterion};
 fn day13(c: &mut Criterion) {
     let input = include_str!("../input/2023/day13.txt").trim();
     let mut group = c.benchmark_group("day13");
-    group.bench_function("generate", |b| {
+    group.bench_function("generator", |b| {
         b.iter(|| aoc2023::day13::generate(input));
     });
     let gen = aoc2023::day13::generate(input);

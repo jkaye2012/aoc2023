@@ -1,11 +1,11 @@
 #[derive(Default)]
-struct Round {
+pub struct Round {
     red: u32,
     green: u32,
     blue: u32,
 }
 
-struct Game {
+pub struct Game {
     rounds: Vec<Round>,
 }
 
@@ -22,7 +22,7 @@ impl Game {
 }
 
 #[aoc_generator(day2)]
-fn generate(input: &str) -> Vec<Game> {
+pub fn generate(input: &str) -> Vec<Game> {
     input
         .lines()
         .map(|line| Game {
@@ -52,7 +52,7 @@ fn generate(input: &str) -> Vec<Game> {
 }
 
 #[aoc(day2, part1)]
-fn cube_game(games: &[Game]) -> u32 {
+pub fn cube_game(games: &[Game]) -> u32 {
     let mut game_idx = 1;
     let mut result = 0;
     for game in games {
@@ -66,7 +66,7 @@ fn cube_game(games: &[Game]) -> u32 {
 }
 
 #[aoc(day2, part2)]
-fn cube_power(games: &[Game]) -> u32 {
+pub fn cube_power(games: &[Game]) -> u32 {
     games
         .iter()
         .map(|g| {

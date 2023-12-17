@@ -2,6 +2,8 @@ use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 fn all(c: &mut Criterion) {
     let input1 = include_str!("../input/2023/day1.txt").trim();
+    let input2 = include_str!("../input/2023/day2.txt").trim();
+    let input3 = include_str!("../input/2023/day3.txt").trim();
     let input12 = include_str!("../input/2023/day12.txt").trim();
     let input13 = include_str!("../input/2023/day13.txt").trim();
     let input14 = include_str!("../input/2023/day14.txt").trim();
@@ -12,6 +14,14 @@ fn all(c: &mut Criterion) {
         b.iter(|| {
             aoc2023::day1::trebuchet_simple(input1);
             aoc2023::day1::trebuchet_wordy(input1);
+
+            let gen2 = aoc2023::day2::generate(input2);
+            aoc2023::day2::cube_game(&gen2);
+            aoc2023::day2::cube_power(&gen2);
+
+            let gen3 = aoc2023::day3::generate(input3);
+            aoc2023::day3::schematic(&gen3);
+            aoc2023::day3::schematic_gears(&gen3);
 
             aoc2023::day12::arrangements(input12);
             aoc2023::day12::expanded_arrangements(input12);

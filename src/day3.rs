@@ -1,10 +1,10 @@
 #[derive(Clone)]
-struct Num {
+pub struct Num {
     val: u32,
     range: Range,
 }
 
-enum Hit {
+pub enum Hit {
     Missed,
     Hit,
     ImpossiblePre,
@@ -12,7 +12,7 @@ enum Hit {
 }
 
 #[derive(Copy, Clone)]
-struct Range {
+pub struct Range {
     start: usize,
     end: usize,
 }
@@ -45,14 +45,14 @@ impl Num {
     }
 }
 
-struct Schematic {
+pub struct Schematic {
     line_len: usize,
     symbols: Vec<(usize, char)>,
     nums: Vec<Num>,
 }
 
 #[aoc_generator(day3)]
-fn generator(input: &str) -> Schematic {
+pub fn generate(input: &str) -> Schematic {
     let mut line_len = None;
     let mut symbols = Vec::new();
     let mut nums = Vec::new();
@@ -107,7 +107,7 @@ fn generator(input: &str) -> Schematic {
 }
 
 #[aoc(day3, part1)]
-fn schematic(input: &Schematic) -> u32 {
+pub fn schematic(input: &Schematic) -> u32 {
     let mut result = 0;
     let mut nums = input.nums.clone();
     let mut to_remove = Vec::new();
@@ -141,7 +141,7 @@ fn schematic(input: &Schematic) -> u32 {
 }
 
 #[aoc(day3, part2)]
-fn schematic_gears(input: &Schematic) -> u32 {
+pub fn schematic_gears(input: &Schematic) -> u32 {
     let mut result = 0;
     let mut nums = input.nums.clone();
     let mut to_remove = Vec::new();
