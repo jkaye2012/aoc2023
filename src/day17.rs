@@ -1,7 +1,5 @@
-use std::{
-    collections::{BinaryHeap, HashMap},
-    fmt::Display,
-};
+use rustc_hash::FxHashMap;
+use std::collections::BinaryHeap;
 
 pub struct City {
     heat_loss: Vec<u8>,
@@ -40,17 +38,6 @@ enum Direction {
     Up,
 }
 
-impl Display for Direction {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Direction::Right => write!(f, "R"),
-            Direction::Down => write!(f, "D"),
-            Direction::Left => write!(f, "L"),
-            Direction::Up => write!(f, "U"),
-        }
-    }
-}
-
 #[derive(PartialEq, Eq)]
 struct Pending {
     heat: u32,
@@ -74,7 +61,7 @@ impl PartialOrd for Pending {
 
 struct Traversal<'a> {
     city: &'a City,
-    cache: HashMap<Step, u32>,
+    cache: FxHashMap<Step, u32>,
     pending: BinaryHeap<Pending>,
 }
 
@@ -94,37 +81,11 @@ impl Step {
         steps: u8,
         to_dir: Direction,
     ) -> Option<Self> {
-        if from_dir == to_dir && steps == 3
-            || to_dir == Direction::Up && from_row == 0
-            || to_dir == Direction::Left && from_col == 0
-            || to_dir == Direction::Down && from_row == city.rows - 1
-            || to_dir == Direction::Right && from_col == city.cols - 1
+        if from_dir == to_dir && steps == 3 || Self::out_of_bounds(city, from_row, from_col, to_dir)
         {
             None
         } else {
-            let steps = if from_dir == to_dir { steps + 1 } else { 1 };
-            match to_dir {
-                Direction::Right => Some(Self {
-                    idx: from_row * city.cols + from_col + 1,
-                    dir: to_dir,
-                    steps,
-                }),
-                Direction::Down => Some(Self {
-                    idx: (from_row + 1) * city.cols + from_col,
-                    dir: to_dir,
-                    steps,
-                }),
-                Direction::Left => Some(Self {
-                    idx: from_row * city.cols + from_col - 1,
-                    dir: to_dir,
-                    steps,
-                }),
-                Direction::Up => Some(Self {
-                    idx: (from_row - 1) * city.cols + from_col,
-                    dir: to_dir,
-                    steps,
-                }),
-            }
+            Self::make_step(city, from_row, from_col, from_dir, to_dir, steps)
         }
     }
 
@@ -138,37 +99,37 @@ impl Step {
     ) -> Option<Self> {
         if from_dir == to_dir && steps == 10
             || from_dir != to_dir && steps < 4
-            || to_dir == Direction::Up && from_row == 0
-            || to_dir == Direction::Left && from_col == 0
-            || to_dir == Direction::Down && from_row == city.rows - 1
-            || to_dir == Direction::Right && from_col == city.cols - 1
+            || Self::out_of_bounds(city, from_row, from_col, to_dir)
         {
             None
         } else {
-            let steps = if from_dir == to_dir { steps + 1 } else { 1 };
-            match to_dir {
-                Direction::Right => Some(Self {
-                    idx: from_row * city.cols + from_col + 1,
-                    dir: to_dir,
-                    steps,
-                }),
-                Direction::Down => Some(Self {
-                    idx: (from_row + 1) * city.cols + from_col,
-                    dir: to_dir,
-                    steps,
-                }),
-                Direction::Left => Some(Self {
-                    idx: from_row * city.cols + from_col - 1,
-                    dir: to_dir,
-                    steps,
-                }),
-                Direction::Up => Some(Self {
-                    idx: (from_row - 1) * city.cols + from_col,
-                    dir: to_dir,
-                    steps,
-                }),
-            }
+            Self::make_step(city, from_row, from_col, from_dir, to_dir, steps)
         }
+    }
+
+    fn out_of_bounds(city: &City, from_row: usize, from_col: usize, to_dir: Direction) -> bool {
+        to_dir == Direction::Up && from_row == 0
+            || to_dir == Direction::Left && from_col == 0
+            || to_dir == Direction::Down && from_row == city.rows - 1
+            || to_dir == Direction::Right && from_col == city.cols - 1
+    }
+
+    fn make_step(
+        city: &City,
+        from_row: usize,
+        from_col: usize,
+        from_dir: Direction,
+        dir: Direction,
+        steps: u8,
+    ) -> Option<Self> {
+        let steps = if from_dir == dir { steps + 1 } else { 1 };
+        let idx = match dir {
+            Direction::Right => from_row * city.cols + from_col + 1,
+            Direction::Down => (from_row + 1) * city.cols + from_col,
+            Direction::Left => from_row * city.cols + from_col - 1,
+            Direction::Up => (from_row - 1) * city.cols + from_col,
+        };
+        Some(Self { idx, dir, steps })
     }
 }
 
@@ -176,7 +137,7 @@ impl<'a> Traversal<'a> {
     pub fn new(city: &'a City) -> Self {
         Traversal {
             city,
-            cache: HashMap::new(),
+            cache: FxHashMap::default(),
             pending: BinaryHeap::new(),
         }
     }
@@ -279,8 +240,7 @@ impl<'a> Traversal<'a> {
             if next_cache.is_none() {
                 self.cache.insert(next, heat);
             } else {
-                let cached = self.cache.get_mut(&next).unwrap();
-                *cached = heat;
+                *self.cache.get_mut(&next).unwrap() = heat;
             }
             let pending = Pending { step: next, heat };
             self.pending.push(pending);
