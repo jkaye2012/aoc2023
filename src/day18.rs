@@ -53,6 +53,7 @@ pub fn generate2(input: &str) -> Vec<(isize, isize, isize)> {
     };
     generate(input, gen)
 }
+
 #[aoc(day18, part1)]
 #[aoc(day18, part2)]
 pub fn lava_trench_area(input: &[(isize, isize, isize)]) -> isize {
