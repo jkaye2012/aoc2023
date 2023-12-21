@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 aoc-runner = "0.3.0"
 aoc-runner-derive = "0.3.0"
+polyfit-rs = "0.2.1"
 radix-heap = "0.4.2"
 rayon = "1.8.0"
 rustc-hash = "1.1.0"
@@ -97,6 +98,10 @@ harness = false
 
 [[bench]]
 name = "bench20"
+harness = false
+
+[[bench]]
+name = "bench21"
 harness = false
 
 [[bench]]
