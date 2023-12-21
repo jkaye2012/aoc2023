@@ -25,5 +25,6 @@ pkgs.mkShell {
     fenix.stable.toolchain
     aoc
     pkgs.linuxPackages_latest.perf
+    pkgs.lldb
   ];
 }

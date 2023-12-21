@@ -20,6 +20,7 @@ fn all(c: &mut Criterion) {
     let input17 = include_str!("../input/2023/day17.txt").trim();
     let input18 = include_str!("../input/2023/day18.txt").trim();
     let input19 = include_str!("../input/2023/day19.txt").trim();
+    let input20 = include_str!("../input/2023/day20.txt").trim();
     let mut group = c.benchmark_group("2023");
     group.bench_function("all", |b| {
         b.iter(|| {
@@ -95,6 +96,9 @@ fn all(c: &mut Criterion) {
             let gen19 = aoc2023::day19::generate(input19);
             aoc2023::day19::accepted(&gen19);
             aoc2023::day19::all_accepted(&gen19);
+
+            let gen20 = aoc2023::day20::generate(input20);
+            aoc2023::day20::button_1000(&gen20);
         })
     });
 }
