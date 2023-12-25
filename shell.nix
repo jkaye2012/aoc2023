@@ -24,6 +24,7 @@ pkgs.mkShell {
   packages = [
     fenix.stable.toolchain
     aoc
+    pkgs.graphviz
     pkgs.linuxPackages_latest.perf
     pkgs.lldb
   ];
